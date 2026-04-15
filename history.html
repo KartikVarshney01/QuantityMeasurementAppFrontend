@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History — QM</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">QM<span>.</span></div>
+  <nav>
+    <button class="nav-btn" onclick="window.location.href='index.html'">Operations</button>
+    <button class="nav-btn active">History</button>
+  </nav>
+  <div class="auth-area">
+    <div class="user-chip">
+      <span class="user-dot"></span>
+      <span id="history-username"></span>
+    </div>
+    <button class="btn-sm" id="logout-btn">Logout</button>
+  </div>
+</header>
+
+<main>
+  <div class="history-header">
+    <div>
+      <div class="page-title">History</div>
+      <div class="page-sub">Your personal operation log, newest first.</div>
+    </div>
+    <button class="btn-sm" id="refresh-btn">↺ Refresh</button>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-lbl">Total ops</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-compare">—</div><div class="stat-lbl">Compares</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-convert">—</div><div class="stat-lbl">Converts</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-arith">—</div><div class="stat-lbl">Arithmetic</div></div>
+  </div>
+
+  <div style="margin-bottom:12px;">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">Filter by operation</div>
+    <div class="filter-row">
+      <button class="filter-pill active" data-op="all">All</button>
+      <button class="filter-pill" data-op="compare">Compare</button>
+      <button class="filter-pill" data-op="convert">Convert</button>
+      <button class="filter-pill" data-op="add">Add</button>
+      <button class="filter-pill" data-op="subtract">Subtract</button>
+      <button class="filter-pill" data-op="divide">Divide</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="history-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Operation</th><th>Operand 1</th><th>Operand 2</th><th>Result</th><th>Status</th><th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px;font-size:12px;">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/history.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', initHistoryPage);
+</script>
+</body>
+</html>

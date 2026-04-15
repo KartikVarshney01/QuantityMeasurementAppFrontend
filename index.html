@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QM — Quantity Measurement</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo">QM<span>.</span></div>
+  <nav>
+    <button class="nav-btn active" id="nav-ops-btn">Operations</button>
+    <button class="nav-btn" id="nav-history-btn">
+      <span class="lock-icon" id="lock-icon">🔒</span> History
+    </button>
+  </nav>
+  <div class="auth-area" id="auth-area">
+    <button class="btn-sm" id="nav-signin-btn">Sign in</button>
+    <button class="btn-sm primary" id="nav-register-btn">Register</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── HOME / OPERATIONS PAGE ── -->
+  <div class="page active" id="page-home">
+    <div class="page-header">
+      <div class="page-title">Quantity Measurement</div>
+      <div class="page-sub">Convert, compare, and operate on physical quantities — no account needed.</div>
+    </div>
+
+    <!-- Op tabs -->
+    <div class="op-tabs">
+      <button class="op-tab active" data-op="compare">Compare</button>
+      <button class="op-tab"        data-op="convert">Convert</button>
+      <button class="op-tab"        data-op="add">Add</button>
+      <button class="op-tab"        data-op="subtract">Subtract</button>
+      <button class="op-tab"        data-op="divide">Divide</button>
+    </div>
+
+    <!-- COMPARE -->
+    <div id="op-compare" class="op-panel">
+      <div class="card">
+        <div class="card-title">Quantity 1</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="cmp-v1" placeholder="0" value="1"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="cmp-u1">
+              <option>Feet</option><option>Inch</option><option>Yard</option><option>Centimeter</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="cmp-c1">
+              <option>LENGTH</option><option>WEIGHT</option><option>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">VS</div><div class="vs-line"></div></div>
+        <div class="card-title">Quantity 2</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="cmp-v2" placeholder="0" value="12"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="cmp-u2">
+              <option>Feet</option><option selected>Inch</option><option>Yard</option><option>Centimeter</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="cmp-c2">
+              <option>LENGTH</option><option>WEIGHT</option><option>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="cmp-btn">Compare</button>
+          <button class="btn-action ghost btn-clear" data-target="compare-result">Clear</button>
+        </div>
+      </div>
+      <div id="compare-result" class="hidden"></div>
+    </div>
+
+    <!-- CONVERT -->
+    <div id="op-convert" class="op-panel hidden">
+      <div class="card">
+        <div class="card-title">Source quantity</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="cvt-v" placeholder="0" value="100"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="cvt-u">
+              <option>Celsius</option><option>Fahrenheit</option><option>Kelvin</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="cvt-c">
+              <option>LENGTH</option><option>WEIGHT</option><option>VOLUME</option><option selected>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="convert-target">
+          <label class="field-label">Convert to unit</label>
+          <select id="cvt-target" style="max-width:200px;">
+            <option>Celsius</option><option selected>Fahrenheit</option><option>Kelvin</option>
+          </select>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="conv-btn">Convert</button>
+          <button class="btn-action ghost btn-clear" data-target="convert-result">Clear</button>
+        </div>
+      </div>
+      <div id="convert-result" class="hidden"></div>
+    </div>
+
+    <!-- ADD -->
+    <div id="op-add" class="op-panel hidden">
+      <div class="card">
+        <div class="card-title">Quantity 1</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="add-v1" placeholder="0" value="5"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="add-u1">
+              <option>Kilogram</option><option>Gram</option><option>Pound</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="add-c1">
+              <option>LENGTH</option><option selected>WEIGHT</option><option>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">+</div><div class="vs-line"></div></div>
+        <div class="card-title">Quantity 2</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="add-v2" placeholder="0" value="500"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="add-u2">
+              <option>Kilogram</option><option selected>Gram</option><option>Pound</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="add-c2">
+              <option>LENGTH</option><option selected>WEIGHT</option><option>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="add-btn">Add</button>
+          <button class="btn-action ghost btn-clear" data-target="add-result">Clear</button>
+        </div>
+      </div>
+      <div id="add-result" class="hidden"></div>
+    </div>
+
+    <!-- SUBTRACT -->
+    <div id="op-subtract" class="op-panel hidden">
+      <div class="card">
+        <div class="card-title">Quantity 1</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="sub-v1" placeholder="0" value="3"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="sub-u1">
+              <option>Litre</option><option>Millilitre</option><option>Gallon</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="sub-c1">
+              <option>LENGTH</option><option>WEIGHT</option><option selected>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">−</div><div class="vs-line"></div></div>
+        <div class="card-title">Quantity 2</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="sub-v2" placeholder="0" value="500"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="sub-u2">
+              <option>Litre</option><option selected>Millilitre</option><option>Gallon</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="sub-c2">
+              <option>LENGTH</option><option>WEIGHT</option><option selected>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="sub-btn">Subtract</button>
+          <button class="btn-action ghost btn-clear" data-target="subtract-result">Clear</button>
+        </div>
+      </div>
+      <div id="subtract-result" class="hidden"></div>
+    </div>
+
+    <!-- DIVIDE -->
+    <div id="op-divide" class="op-panel hidden">
+      <div class="card">
+        <div class="card-title">Quantity 1 (dividend)</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="div-v1" placeholder="0" value="10"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="div-u1">
+              <option>Feet</option><option>Inch</option><option>Yard</option><option>Centimeter</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="div-c1">
+              <option>LENGTH</option><option>WEIGHT</option><option>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">÷</div><div class="vs-line"></div></div>
+        <div class="card-title">Quantity 2 (divisor)</div>
+        <div class="qty-row">
+          <div><label class="field-label">Value</label><input type="number" id="div-v2" placeholder="0" value="2"></div>
+          <div><label class="field-label">Unit</label>
+            <select id="div-u2">
+              <option>Feet</option><option>Inch</option><option>Yard</option><option>Centimeter</option>
+            </select>
+          </div>
+          <div><label class="field-label">Category</label>
+            <select id="div-c2">
+              <option>LENGTH</option><option>WEIGHT</option><option>VOLUME</option><option>TEMPERATURE</option>
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="div-btn">Divide</button>
+          <button class="btn-action ghost btn-clear" data-target="divide-result">Clear</button>
+        </div>
+      </div>
+      <div id="divide-result" class="hidden"></div>
+    </div>
+  </div><!-- /page-home -->
+
+
+  <!-- ── HISTORY PAGE ── -->
+  <div class="page" id="page-history">
+
+    <!-- Gate — shown when not logged in -->
+    <div id="history-gate">
+      <div class="history-gate">
+        <div class="gate-icon">📋</div>
+        <div class="gate-title">Your history awaits</div>
+        <div class="gate-sub">Sign in or create a free account to view, filter, and track all your past operations.</div>
+        <div class="gate-btns">
+          <button class="btn-gate primary" id="gate-register-btn">Create account</button>
+          <button class="btn-gate ghost"   id="gate-login-btn">Sign in</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actual history — shown when logged in -->
+    <div id="history-content" class="hidden">
+      <div class="history-header">
+        <div>
+          <div class="page-title">History</div>
+          <div class="page-sub">Your personal operation log, newest first.</div>
+        </div>
+        <button class="btn-sm" id="refresh-btn">↺ Refresh</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-lbl">Total ops</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-compare">—</div><div class="stat-lbl">Compares</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-convert">—</div><div class="stat-lbl">Converts</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-arith">—</div><div class="stat-lbl">Arithmetic</div></div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">Filter by operation</div>
+        <div class="filter-row">
+          <button class="filter-pill active" data-op="all">All</button>
+          <button class="filter-pill" data-op="compare">Compare</button>
+          <button class="filter-pill" data-op="convert">Convert</button>
+          <button class="filter-pill" data-op="add">Add</button>
+          <button class="filter-pill" data-op="subtract">Subtract</button>
+          <button class="filter-pill" data-op="divide">Divide</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="history-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Operation</th><th>Operand 1</th><th>Operand 2</th><th>Result</th><th>Status</th><th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px;font-size:12px;">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /history-content -->
+
+  </div><!-- /page-history -->
+
+</main>
+
+
+<!-- ── Auth Modal ── -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close-btn">×</button>
+    <div class="modal-title">Welcome to QM<span style="color:var(--accent)">.</span></div>
+    <div class="modal-sub">Sign in to access your history.</div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-login">Sign in</button>
+      <button class="modal-tab"        id="tab-register">Register</button>
+    </div>
+
+    <!-- Login form -->
+    <div id="modal-login-form">
+      <div class="modal-field">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="jane@example.com">
+      </div>
+      <div class="modal-field">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••">
+      </div>
+      <button class="modal-submit" id="login-btn">Sign in</button>
+    </div>
+
+    <!-- Register form -->
+    <div id="modal-register-form" class="hidden">
+      <div class="modal-field">
+        <label>Full name</label>
+        <input type="text" id="reg-name" placeholder="Jane Smith">
+      </div>
+      <div class="modal-field">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="jane@example.com">
+      </div>
+      <div class="modal-field">
+        <label>Password <span style="font-size:10px;color:var(--muted)">min 6 chars</span></label>
+        <input type="password" id="reg-pass" placeholder="••••••••">
+      </div>
+      <button class="modal-submit" id="reg-btn">Create account</button>
+    </div>
+
+    <div id="modal-err" class="modal-err hidden"></div>
+  </div>
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/history.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

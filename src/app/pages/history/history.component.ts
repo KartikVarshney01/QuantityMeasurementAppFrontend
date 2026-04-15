@@ -80,13 +80,45 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }).length;
   }
 
-  formatQuantity(q: any): string {
-    if (!q) return '—';
+//   formatQuantity(q: any): string {
+//     if (!q) return '—';
+//     if (typeof q === 'object') {
+//       const val = q.value ?? q.Value;
+//       const unit = q.unitName ?? q.UnitName ?? q.unit ?? q.Unit;
+//       return `${val} ${unit}`;
+//     }
+//     return String(q);
+//   }
+// }
+
+formatQuantity(q: any): string {
+    if (q === null || q === undefined) return '—';
+ 
+    // Boolean result (Compare operation)
+    if (typeof q === 'boolean') return String(q);
+ 
+    // Number result (Divide operation)
+    if (typeof q === 'number') return String(q);
+ 
+    // Proper QuantityDTO object from backend JSON
     if (typeof q === 'object') {
-      const val = q.value ?? q.Value;
+      const val  = q.value    ?? q.Value;
       const unit = q.unitName ?? q.UnitName ?? q.unit ?? q.Unit;
-      return `${val} ${unit}`;
+      if (val !== undefined && unit !== undefined) return `${val} ${unit}`;
+      // Fallback: stringify whatever object we got
+      return JSON.stringify(q);
     }
+ 
+    // String cases
+    if (typeof q === 'string') {
+      // Handle Java toString() like: "QuantityDTO(5.5, Kilogram, WEIGHT)"
+      const dtoMatch = q.match(/QuantityDTO\(\s*([\d.]+)\s*,\s*(\w+)\s*,\s*\w+\s*\)/i);
+      if (dtoMatch) return `${dtoMatch[1]} ${dtoMatch[2]}`;
+ 
+      // Plain string (e.g. "true", "false", a number as string)
+      return q;
+    }
+ 
     return String(q);
   }
 }

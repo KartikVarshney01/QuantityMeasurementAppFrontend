@@ -1,0 +1,350 @@
+<main>
+  <div class="page-header">
+    <h1 class="page-title">Quantity Measurement</h1>
+    <p class="page-sub">Convert, compare, and operate on physical quantities — no account needed.</p>
+  </div>
+
+  <!-- Op Tabs -->
+  <div class="op-tabs">
+    @for (op of operations; track op.id) {
+      <button class="op-tab" [class.active]="activeOp === op.id"
+        [id]="'tab-' + op.id" (click)="switchOp(op.id)">
+        {{ op.label }}
+      </button>
+    }
+  </div>
+
+  <!-- ══ COMPARE ══════════════════════════════════════════════════════ -->
+  @if (activeOp === 'compare') {
+    <div class="op-panel" id="op-compare">
+      <div class="card">
+        <div class="card-title">Quantity 1</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="cmp-v1" [(ngModel)]="cmp.v1" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="cmp-u1" [(ngModel)]="cmp.u1">
+              @for (u of getUnits(cmp.c1); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="cmp-c1" [(ngModel)]="cmp.c1" (change)="onCategoryChange(cmp,'c1','u1')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">VS</div><div class="vs-line"></div></div>
+
+        <div class="card-title">Quantity 2</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="cmp-v2" [(ngModel)]="cmp.v2" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="cmp-u2" [(ngModel)]="cmp.u2">
+              @for (u of getUnits(cmp.c2); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="cmp-c2" [(ngModel)]="cmp.c2" (change)="onCategoryChange(cmp,'c2','u2')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn-action primary" id="cmp-btn" [disabled]="loading['compare']" (click)="doCompare()">
+            @if (loading['compare']) { <span class="spinner"></span> } @else { Compare }
+          </button>
+          <button class="btn-action ghost" (click)="clearResult('compare')">Clear</button>
+        </div>
+      </div>
+
+      @if (results['compare']) {
+        <div class="result-anim">
+          @if (results['compare']?.type === 'error') {
+            <div class="result-box danger">
+              <div class="result-lbl">Error</div>
+              <div class="result-err">{{ results['compare']?.error }}</div>
+            </div>
+          } @else {
+            <div class="result-box" [class.success]="results['compare']?.equal" [class.danger]="!results['compare']?.equal">
+              <div class="result-lbl">Comparison result</div>
+              <span class="result-badge" [class.badge-eq]="results['compare']?.equal" [class.badge-neq]="!results['compare']?.equal">
+                {{ results['compare']?.equal ? '= Equal' : '≠ Not equal' }}
+              </span>
+              <div class="result-meta">{{ results['compare']?.meta }}</div>
+              @if (results['compare']?.isLocal) { <div class="local-badge">⚡ Computed locally</div> }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ══ CONVERT ══════════════════════════════════════════════════════ -->
+  @if (activeOp === 'convert') {
+    <div class="op-panel" id="op-convert">
+      <div class="card">
+        <div class="card-title">Source quantity</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="cvt-v" [(ngModel)]="cvt.v" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="cvt-u" [(ngModel)]="cvt.u">
+              @for (u of getUnits(cvt.cat); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="cvt-c" [(ngModel)]="cvt.cat" (change)="onConvertCatChange()">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="convert-target">
+          <label class="field-label">Convert to unit</label>
+          <select id="cvt-target" [(ngModel)]="cvt.target" style="max-width:200px;">
+            @for (u of getUnits(cvt.cat); track u) { <option [value]="u">{{u}}</option> }
+          </select>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="conv-btn" [disabled]="loading['convert']" (click)="doConvert()">
+            @if (loading['convert']) { <span class="spinner"></span> } @else { Convert }
+          </button>
+          <button class="btn-action ghost" (click)="clearResult('convert')">Clear</button>
+        </div>
+      </div>
+
+      @if (results['convert']) {
+        <div class="result-anim">
+          @if (results['convert']?.type === 'error') {
+            <div class="result-box danger">
+              <div class="result-lbl">Error</div>
+              <div class="result-err">{{ results['convert']?.error }}</div>
+            </div>
+          } @else {
+            <div class="result-box success">
+              <div class="result-lbl">Conversion result</div>
+              <div class="result-val">{{ fmt(results['convert']?.value) }}<span class="result-unit">{{ results['convert']?.unit }}</span></div>
+              <div class="result-meta">{{ results['convert']?.meta }}</div>
+              @if (results['convert']?.isLocal) { <div class="local-badge">⚡ Computed locally</div> }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ══ ADD ══════════════════════════════════════════════════════════ -->
+  @if (activeOp === 'add') {
+    <div class="op-panel" id="op-add">
+      <div class="card">
+        <div class="card-title">Quantity 1</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="add-v1" [(ngModel)]="add.v1" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="add-u1" [(ngModel)]="add.u1">
+              @for (u of getUnits(add.c1); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="add-c1" [(ngModel)]="add.c1" (change)="onCategoryChange(add,'c1','u1')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">+</div><div class="vs-line"></div></div>
+        <div class="card-title">Quantity 2</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="add-v2" [(ngModel)]="add.v2" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="add-u2" [(ngModel)]="add.u2">
+              @for (u of getUnits(add.c2); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="add-c2" [(ngModel)]="add.c2" (change)="onCategoryChange(add,'c2','u2')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="add-btn" [disabled]="loading['add']" (click)="doAdd()">
+            @if (loading['add']) { <span class="spinner"></span> } @else { Add }
+          </button>
+          <button class="btn-action ghost" (click)="clearResult('add')">Clear</button>
+        </div>
+      </div>
+      @if (results['add']) {
+        <div class="result-anim">
+          @if (results['add']?.type === 'error') {
+            <div class="result-box danger"><div class="result-lbl">Error</div><div class="result-err">{{ results['add']?.error }}</div></div>
+          } @else {
+            <div class="result-box success">
+              <div class="result-lbl">Addition result</div>
+              <div class="result-val">{{ fmt(results['add']?.value) }}<span class="result-unit">{{ results['add']?.unit }}</span></div>
+              <div class="result-meta">{{ results['add']?.meta }}</div>
+              @if (results['add']?.isLocal) { <div class="local-badge">⚡ Computed locally</div> }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ══ SUBTRACT ═════════════════════════════════════════════════════ -->
+  @if (activeOp === 'subtract') {
+    <div class="op-panel" id="op-subtract">
+      <div class="card">
+        <div class="card-title">Quantity 1</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="sub-v1" [(ngModel)]="sub.v1" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="sub-u1" [(ngModel)]="sub.u1">
+              @for (u of getUnits(sub.c1); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="sub-c1" [(ngModel)]="sub.c1" (change)="onCategoryChange(sub,'c1','u1')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">−</div><div class="vs-line"></div></div>
+        <div class="card-title">Quantity 2</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="sub-v2" [(ngModel)]="sub.v2" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="sub-u2" [(ngModel)]="sub.u2">
+              @for (u of getUnits(sub.c2); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="sub-c2" [(ngModel)]="sub.c2" (change)="onCategoryChange(sub,'c2','u2')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="sub-btn" [disabled]="loading['subtract']" (click)="doSubtract()">
+            @if (loading['subtract']) { <span class="spinner"></span> } @else { Subtract }
+          </button>
+          <button class="btn-action ghost" (click)="clearResult('subtract')">Clear</button>
+        </div>
+      </div>
+      @if (results['subtract']) {
+        <div class="result-anim">
+          @if (results['subtract']?.type === 'error') {
+            <div class="result-box danger"><div class="result-lbl">Error</div><div class="result-err">{{ results['subtract']?.error }}</div></div>
+          } @else {
+            <div class="result-box success">
+              <div class="result-lbl">Subtraction result</div>
+              <div class="result-val">{{ fmt(results['subtract']?.value) }}<span class="result-unit">{{ results['subtract']?.unit }}</span></div>
+              <div class="result-meta">{{ results['subtract']?.meta }}</div>
+              @if (results['subtract']?.isLocal) { <div class="local-badge">⚡ Computed locally</div> }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ══ DIVIDE ════════════════════════════════════════════════════════ -->
+  @if (activeOp === 'divide') {
+    <div class="op-panel" id="op-divide">
+      <div class="card">
+        <div class="card-title">Quantity 1 (dividend)</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="div-v1" [(ngModel)]="div.v1" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="div-u1" [(ngModel)]="div.u1">
+              @for (u of getUnits(div.c1); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="div-c1" [(ngModel)]="div.c1" (change)="onCategoryChange(div,'c1','u1')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="vs-sep"><div class="vs-line"></div><div class="vs-text">÷</div><div class="vs-line"></div></div>
+        <div class="card-title">Quantity 2 (divisor)</div>
+        <div class="qty-row">
+          <div>
+            <label class="field-label">Value</label>
+            <input type="number" id="div-v2" [(ngModel)]="div.v2" placeholder="0">
+          </div>
+          <div>
+            <label class="field-label">Unit</label>
+            <select id="div-u2" [(ngModel)]="div.u2">
+              @for (u of getUnits(div.c2); track u) { <option [value]="u">{{u}}</option> }
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Category</label>
+            <select id="div-c2" [(ngModel)]="div.c2" (change)="onCategoryChange(div,'c2','u2')">
+              @for (c of CATEGORIES; track c) { <option [value]="c">{{c}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-action primary" id="div-btn" [disabled]="loading['divide']" (click)="doDivide()">
+            @if (loading['divide']) { <span class="spinner"></span> } @else { Divide }
+          </button>
+          <button class="btn-action ghost" (click)="clearResult('divide')">Clear</button>
+        </div>
+      </div>
+      @if (results['divide']) {
+        <div class="result-anim">
+          @if (results['divide']?.type === 'error') {
+            <div class="result-box danger"><div class="result-lbl">Error</div><div class="result-err">{{ results['divide']?.error }}</div></div>
+          } @else {
+            <div class="result-box success">
+              <div class="result-lbl">Division result (ratio)</div>
+              <div class="result-val">{{ fmt(results['divide']?.value) }}<span class="result-unit">dimensionless</span></div>
+              <div class="result-meta">{{ results['divide']?.meta }}</div>
+              @if (results['divide']?.isLocal) { <div class="local-badge">⚡ Computed locally</div> }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</main>

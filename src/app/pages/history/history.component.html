@@ -1,0 +1,80 @@
+<main>
+  @if (!isLoggedIn) {
+    <div id="history-gate">
+      <div class="history-gate">
+        <div class="gate-icon">📋</div>
+        <div class="gate-title">Your history awaits</div>
+        <div class="gate-sub">Sign in or create a free account to view, filter, and track all your past operations.</div>
+        <div class="gate-btns">
+          <button class="btn-gate primary" (click)="openRegister()">Create account</button>
+          <button class="btn-gate ghost" (click)="openLogin()">Sign in</button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div id="history-content">
+      <div class="history-header">
+        <div>
+          <h1 class="page-title">History</h1>
+          <p class="page-sub">Your personal operation log, newest first.</p>
+        </div>
+        <button class="btn-sm" (click)="loadHistory()">↺ Refresh</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num">{{ stats.total }}</div><div class="stat-lbl">Total ops</div></div>
+        <div class="stat-card"><div class="stat-num">{{ stats.compare }}</div><div class="stat-lbl">Compares</div></div>
+        <div class="stat-card"><div class="stat-num">{{ stats.convert }}</div><div class="stat-lbl">Converts</div></div>
+        <div class="stat-card"><div class="stat-num">{{ stats.arith }}</div><div class="stat-lbl">Arithmetic</div></div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">Filter by operation</div>
+        <div class="filter-row">
+          @for (op of ['all', 'compare', 'convert', 'add', 'subtract', 'divide']; track op) {
+            <button class="filter-pill" [class.active]="filterOp === op" (click)="applyFilter(op)">
+              {{ op | titlecase }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="history-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Operation</th><th>Operand 1</th><th>Operand 2</th><th>Result</th><th>Status</th><th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (loading) {
+                <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px;font-size:12px;"><span class="spinner"></span> Loading…</td></tr>
+              } @else if (filtered.length === 0) {
+                <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px;font-size:12px;">No operations found.</td></tr>
+              } @else {
+                @for (r of filtered; track r.id) {
+                  <tr>
+                    <td style="color:var(--muted)">{{ r.id }}</td>
+                    <td><span class="op-chip" [ngClass]="'op-' + r.operation?.toLowerCase()">{{ r.operation }}</span></td>
+                    <td>{{ formatQuantity(r.operand1) }}</td>
+                    <td>{{ formatQuantity(r.operand2) }}</td>
+                    <td>{{ formatQuantity(r.result) }}</td>
+                    <td>
+                      @if (r.hasError) {
+                        <span class="status-err">Error</span>
+                      } @else {
+                        <span class="status-ok">OK</span>
+                      }
+                    </td>
+                    <td style="color:var(--muted)">{{ r.createdAt | date:'shortTime' }}</td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+</main>

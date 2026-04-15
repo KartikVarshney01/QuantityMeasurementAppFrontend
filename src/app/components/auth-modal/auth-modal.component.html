@@ -1,0 +1,70 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onOverlayClick($event)">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Authentication">
+
+      <button class="modal-close" id="modal-close-btn" (click)="close()">×</button>
+
+      <div class="modal-title">Welcome to QM<span>.</span></div>
+      <div class="modal-sub">Sign in to unlock history and save your operations.</div>
+
+      <!-- Tabs -->
+      <div class="modal-tabs">
+        <button class="modal-tab" id="tab-login"
+          [class.active]="activeTab === 'login'"
+          (click)="switchTab('login')">Sign in</button>
+        <button class="modal-tab" id="tab-register"
+          [class.active]="activeTab === 'register'"
+          (click)="switchTab('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      @if (activeTab === 'login') {
+        <div id="modal-login-form">
+          <div class="modal-field">
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" [(ngModel)]="loginEmail"
+              placeholder="jane@example.com" (keydown.enter)="doLogin()">
+          </div>
+          <div class="modal-field">
+            <label for="login-pass">Password</label>
+            <input id="login-pass" type="password" [(ngModel)]="loginPass"
+              placeholder="••••••••" (keydown.enter)="doLogin()">
+          </div>
+          <button class="modal-submit" id="login-btn" [disabled]="loading" (click)="doLogin()">
+            @if (loading) { <span class="spinner"></span> } @else { Sign in }
+          </button>
+        </div>
+      }
+
+      <!-- Register Form -->
+      @if (activeTab === 'register') {
+        <div id="modal-register-form">
+          <div class="modal-field">
+            <label for="reg-name">Full name</label>
+            <input id="reg-name" type="text" [(ngModel)]="regName"
+              placeholder="Jane Smith">
+          </div>
+          <div class="modal-field">
+            <label for="reg-email">Email</label>
+            <input id="reg-email" type="email" [(ngModel)]="regEmail"
+              placeholder="jane@example.com">
+          </div>
+          <div class="modal-field">
+            <label for="reg-pass">Password <span class="hint">min 6 chars</span></label>
+            <input id="reg-pass" type="password" [(ngModel)]="regPass"
+              placeholder="••••••••" (keydown.enter)="doRegister()">
+          </div>
+          <button class="modal-submit" id="reg-btn" [disabled]="loading" (click)="doRegister()">
+            @if (loading) { <span class="spinner"></span> } @else { Create account }
+          </button>
+        </div>
+      }
+
+      <!-- Error -->
+      @if (errorMsg) {
+        <div class="modal-err" id="modal-err">{{ errorMsg }}</div>
+      }
+
+    </div>
+  </div>
+}

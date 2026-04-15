@@ -1,0 +1,25 @@
+<header>
+  <div class="logo">QM<span>.</span></div>
+
+  <nav>
+    <a class="nav-btn" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      Operations
+    </a>
+    <a class="nav-btn" routerLink="/history" routerLinkActive="active">
+      <span class="lock-icon" *ngIf="!user">🔒</span> History
+    </a>
+  </nav>
+
+  <div class="auth-area">
+    @if (user) {
+      <div class="user-chip">
+        <span class="user-dot"></span>
+        {{ user.name }}
+      </div>
+      <button class="btn-sm" id="header-logout-btn" (click)="logout()">Logout</button>
+    } @else {
+      <button class="btn-sm"         id="header-signin-btn"   (click)="openLogin()">Sign in</button>
+      <button class="btn-sm primary" id="header-register-btn" (click)="openRegister()">Register</button>
+    }
+  </div>
+</header>

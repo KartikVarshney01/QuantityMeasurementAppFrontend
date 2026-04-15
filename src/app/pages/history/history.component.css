@@ -1,0 +1,73 @@
+.history-header {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px;
+}
+.page-title  { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+.page-sub    { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.btn-sm {
+  font-family: var(--font); font-size: 12px; font-weight: 500;
+  padding: 6px 14px; border-radius: var(--radius-sm); cursor: pointer;
+  border: 1px solid var(--border2); background: transparent; color: var(--muted);
+  transition: all .15s; display: flex; align-items: center; gap: 6px;
+}
+.btn-sm:hover { color: var(--text); border-color: rgba(255,255,255,0.25); background: var(--surface2); }
+
+/* ── History gate ── */
+.history-gate {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 340px; text-align: center; gap: 16px; margin-top: 40px;
+}
+.gate-icon  { font-size: 48px; opacity: 0.15; }
+.gate-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.gate-sub   { font-size: 13px; color: var(--muted); max-width: 320px; line-height: 1.6; }
+.gate-btns  { display: flex; gap: 10px; margin-top: 8px; }
+.btn-gate   {
+  font-family: var(--font); font-size: 13px; font-weight: 600; padding: 10px 24px;
+  border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; letter-spacing: 0.02em;
+}
+.btn-gate.primary { background: var(--accent); color: #0e0e11; border: none; }
+.btn-gate.primary:hover { background: #d8ff5c; }
+.btn-gate.ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border2); }
+.btn-gate.ghost:hover { color: var(--text); }
+
+/* ── History stats ── */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+.stat-num  { font-size: 26px; font-weight: 700; color: var(--text); font-family: var(--mono); line-height: 1.1; }
+.stat-lbl  { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ── Filters ── */
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.filter-pill {
+  font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 20px; cursor: pointer;
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  font-family: var(--font); transition: all .15s; letter-spacing: 0.04em;
+}
+.filter-pill:hover  { color: var(--text); border-color: var(--border2); }
+.filter-pill.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(200,240,74,0.3); }
+
+/* ── Table ── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.history-table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+th {
+  font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border);
+}
+td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text); font-family: var(--mono); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td      { background: var(--surface2); }
+
+.op-chip     { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; font-family: var(--font); letter-spacing: 0.04em; }
+.op-compare  { background: rgba(92,184,255,0.12); color: var(--info); }
+.op-convert  { background: var(--accent-dim);     color: var(--accent); }
+.op-add      { background: var(--success-dim);    color: var(--success); }
+.op-subtract { background: rgba(255,184,92,0.12); color: var(--warn); }
+.op-divide   { background: rgba(255,92,92,0.12);  color: var(--danger); }
+
+.status-ok   { color: var(--success); font-size: 10px; font-weight: 600; }
+.status-err  { color: var(--danger);  font-size: 10px; font-weight: 600; }
+
+@media (max-width: 640px) {
+  .stat-grid  { grid-template-columns: repeat(2, 1fr); }
+}
